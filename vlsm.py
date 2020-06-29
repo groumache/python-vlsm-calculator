@@ -19,63 +19,63 @@ import math
 
 
 # check if the ip (e.g. "192.168.0.0") is a valid ip address
-def is_valid_ip(ip: str) -> bool:
-    x = []
+def is_valid_ip(ip_str: str) -> bool:
+    ip_list = []
     try:
-        x = list(map(int, ip.split('.')))
+        ip_list = list(map(int, ip_str.split('.')))
     except:
         return False
 
-    if len(x) != 4:
+    if len(ip_list) != 4:
         return False
 
-    for i in x:
+    for i in ip_list:
         if i not in range(0,256):
             return False
 
     return True
 
 # check if the netmask (e.g. "255.255.128.0") is a valid netmask
-def is_valid_netmask(ip: str) -> bool:
-    netmask = []
+def is_valid_netmask(netmask_str: str) -> bool:
+    netmask_list = []
     try:
-        netmask = list(map(int, ip.split('.')))
+        netmask_list = list(map(int, netmask_str.split('.')))
     except:
         return False
 
-    if not is_valid_ip(ip):
+    if not is_valid_ip(netmask_str):
         return False
 
     # skip the 255
     i = 0
     while i < 4:
-        if netmask[i] != 255:
+        if netmask_list[i] != 255:
             break
         i += 1
     
-    if i < 4 and netmask[i] not in [0, 128, 192, 224, 240, 248, 252, 254, 255]:
+    if i < 4 and netmask_list[i] not in [0, 128, 192, 224, 240, 248, 252, 254, 255]:
         return False
     i += 1
 
     while i < 4:
-        if netmask[i] != 0:
+        if netmask_list[i] != 0:
             return False
         i += 1
 
     return True
 
 # converts a list (e.g. [255, 255, 128, 0]) into a number (e.g. 17)
-def convert_netmask_str_to_int(netmask: str) -> int:
-    netmask = list(map(int, netmask.split('.')))
+def convert_netmask_str_to_int(netmask_str: str) -> int:
+    netmask_list = list(map(int, netmask_str.split('.')))
 
     i = 0
-    while i < 3 and netmask[i] == 255:
+    while i < 3 and netmask_list[i] == 255:
         i += 1
 
-    if netmask[i] == 0:
+    if netmask_list[i] == 0:
         return i * 8
     else:
-        return int(i * 8 + 8 - math.log2(256 - netmask[i]))
+        return int(i * 8 + 8 - math.log2(256 - netmask_list[i]))
 
 # converts an int (e.g. 17) into a list (e.g. [255, 255, 128, 0])
 def convert_netmask_int_to_list(netmask_int: int) -> list:
